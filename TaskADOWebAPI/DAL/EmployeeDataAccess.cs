@@ -94,10 +94,15 @@ namespace TaskADOWebAPI.DAL
             cmd.Parameters.AddWithValue("@DeptId", employee.DeptId);
             cmd.Parameters.AddWithValue("@ProjectId", employee.ProjectId);
             cmd.Parameters.AddWithValue("@RoleId", employee.RoleId);
+
+            var returnParameter = cmd.Parameters.Add("@ReturnVal", SqlDbType.Int);
+            returnParameter.Direction = ParameterDirection.ReturnValue;
+
             cmd.ExecuteNonQuery();
+            var id = returnParameter.Value;
             _con.Close();
 
-            return employee.Id;
+            return (int)id;
         }
 
         public bool UpdateEmployee(Employee employee)

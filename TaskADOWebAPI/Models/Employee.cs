@@ -26,11 +26,6 @@ namespace TaskADOWebAPI.Models
         public int? ProjectId { get; set; }
         public int? RoleId { get; set; }
 
-     /*   public virtual Department Department { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Employee> Employees1 { get; set; }
-        public virtual Employee Employee1 { get; set; }
-        public virtual Project Project { get; set; }
-        public virtual Role Role { get; set; }*/
+     
     }
 }
