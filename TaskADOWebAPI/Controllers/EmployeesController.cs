@@ -28,6 +28,13 @@ namespace TaskADOWebAPI.Controllers
             return Ok(_db.GetEmployeeById(id));
         }
 
+        [HttpGet]
+        [Route("api/employees/getSeniorEmployees")]
+        public IHttpActionResult GetSeniors()
+        {
+            return Ok(_db.GetSeniorEmployees());
+        }
+
         [HttpPost]
         [Route("api/employees/create/")]
         public IHttpActionResult Post(Employee employee)

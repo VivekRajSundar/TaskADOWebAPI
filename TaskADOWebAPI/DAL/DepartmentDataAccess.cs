@@ -71,6 +71,7 @@ namespace TaskADOWebAPI.DAL
             return department.Id;
         }
 
+        
         public bool UpdateDepartment(Department department)
         {
             if (department == null)

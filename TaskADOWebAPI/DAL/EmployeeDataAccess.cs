@@ -72,6 +72,14 @@ namespace TaskADOWebAPI.DAL
             return emp;
         }
 
+        //Need to complete this 
+        public List<Employee> GetSeniorEmployees()
+        {
+            List<Employee> employees = GetAllEmployees();
+            return employees;
+        }
+
+
         public int CreateEmployee(Employee employee)
         {
             _con.Open();
