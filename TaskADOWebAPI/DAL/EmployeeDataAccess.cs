@@ -4,6 +4,7 @@ using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
 using System.Drawing;
+using System.Globalization;
 using System.Linq;
 using System.Web;
 using System.Web.Http;
@@ -25,16 +26,15 @@ namespace TaskADOWebAPI.DAL
             _con.Open();
             List<Employee> employees = new List<Employee>();
 
-            
-                SqlCommand cmd = new SqlCommand("spGetAllEmployees", _con);
-                cmd.CommandType = CommandType.StoredProcedure;
-                cmd.ExecuteNonQuery();
-                SqlDataAdapter da = new SqlDataAdapter(cmd);
-                DataSet ds = new DataSet();
-                _con.Close();
-                da.Fill(ds);
+            SqlCommand cmd = new SqlCommand("spGetAllEmployees", _con);
+            cmd.CommandType = CommandType.StoredProcedure;
+            cmd.ExecuteNonQuery();
+            SqlDataAdapter da = new SqlDataAdapter(cmd);
+            DataSet ds = new DataSet();
+            _con.Close();
+            da.Fill(ds);
 
-                DataTable dt = ds.Tables[0];
+            DataTable dt = ds.Tables[0];
             // LINQ for returning List type 
             foreach (DataRow row in dt.Rows)
             {
@@ -49,16 +49,16 @@ namespace TaskADOWebAPI.DAL
                 cur.DateOfBirth = Convert.ToDateTime(row["DateOfBirth"]);
                 cur.DateOfJoining = Convert.ToDateTime(row["DateOfJoining"]);
                 cur.DeptId = Convert.ToInt32(row["DeptId"]);
-                if(row["ProjectId"].ToString() != "") cur.ProjectId = Convert.ToInt32(row["ProjectId"]);
+                if (row["ProjectId"].ToString() != "") cur.ProjectId = Convert.ToInt32(row["ProjectId"]);
                 cur.RoleId = Convert.ToInt32(row["RoleId"]);
-                if(row["ManagerId"].ToString() != "")  cur.ManagerId = Convert.ToInt32(row["ManagerId"]);
+                if (row["ManagerId"].ToString() != "") cur.ManagerId = Convert.ToInt32(row["ManagerId"]);
                 cur.IsActive = Convert.ToBoolean(row["IsActive"]);
                 if (row["DateOfResigning"].ToString() != "") cur.DateOfResigning = Convert.ToDateTime(row["DateOfResigning"]);
                 if (row["UpdatedDate"].ToString() != "") cur.UpdatedDate = Convert.ToDateTime(row["UpdatedDate"]);
                 employees.Add(cur);
 
             }
-              
+
             return employees;
 
         }
@@ -66,16 +66,39 @@ namespace TaskADOWebAPI.DAL
         public Employee GetEmployeeById(int id)
         {
             List<Employee> employees = GetAllEmployees();
-            
             Employee emp = employees.FirstOrDefault(x => x.Id == id);
-
             return emp;
         }
 
         //Need to complete this 
-        public List<Employee> GetSeniorEmployees()
+        public List<Employee> GetSeniorEmployees(int year)
         {
-            List<Employee> employees = GetAllEmployees();
+            _con.Open();
+            List<Employee> employees = new List<Employee>();
+
+            SqlCommand cmd = new SqlCommand("spGetEmployeesWhoWorkMoreThanYears", _con);
+            cmd.CommandType = CommandType.StoredProcedure;
+            cmd.Parameters.AddWithValue("@year", year);
+            cmd.ExecuteNonQuery();
+            SqlDataAdapter da = new SqlDataAdapter(cmd);
+            DataSet ds = new DataSet();
+            _con.Close();
+            da.Fill(ds);
+
+            DataTable dt = ds.Tables[0];
+            // LINQ for returning List type 
+            foreach (DataRow row in dt.Rows)
+            {
+                Employee cur = new Employee();
+                cur.FirstName = Convert.ToString(row["FirstName"]);
+                cur.LastName = Convert.ToString(row["LastName"]);
+                cur.EmailId = Convert.ToString(row["Experience"]);
+                cur.DateOfJoining = Convert.ToDateTime(row["DateOfJoining"]);
+                
+                employees.Add(cur);
+
+            }
+
             return employees;
         }
 
@@ -120,7 +143,7 @@ namespace TaskADOWebAPI.DAL
                 return false;
             }
 
-            bool isPresent = GetAllEmployees().Any(x =>  x.Id == employee.Id);
+            bool isPresent = GetAllEmployees().Any(x => x.Id == employee.Id);
             if (!isPresent) { return false; }
 
             _con.Open();

@@ -29,10 +29,10 @@ namespace TaskADOWebAPI.Controllers
         }
 
         [HttpGet]
-        [Route("api/employees/getSeniorEmployees")]
-        public IHttpActionResult GetSeniors()
+        [Route("api/employees/getEmployeesByYOE/{year}")]
+        public IHttpActionResult GetSeniors(int year)
         {
-            return Ok(_db.GetSeniorEmployees());
+            return Ok(_db.GetSeniorEmployees(year));
         }
 
         [HttpPost]

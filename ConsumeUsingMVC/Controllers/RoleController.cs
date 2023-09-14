@@ -11,35 +11,35 @@ using ConsumeUsingMVC.Models;
 
 namespace ConsumeUsingMVC.Controllers
 {
-    public class DepartmentController : Controller
+    public class RoleController : Controller
     {
         private string _baseUrl = "http://localhost:56459/";
         private HttpClient _httpClient;
 
-        public DepartmentController()
+        public RoleController()
         {
             _httpClient = new HttpClient();
-            _httpClient.BaseAddress = new Uri(_baseUrl + "api/departments/");
+            _httpClient.BaseAddress = new Uri(_baseUrl + "api/roles/");
             _httpClient.DefaultRequestHeaders.Accept.Clear();
             _httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
         }
-        // GET: Department
+        // GET: Roles
         public async Task<ActionResult> Index()
         {
-            List<Department> departments = new List<Department>();
-            HttpResponseMessage getAllDepartmentsData = await _httpClient.GetAsync("getAllDepartments");
+            List<Role> projects = new List<Role>();
+            HttpResponseMessage getAllRolesData = await _httpClient.GetAsync("getAllRoles");
 
-            if (getAllDepartmentsData.IsSuccessStatusCode)
+            if (getAllRolesData.IsSuccessStatusCode)
             {
-                string results = getAllDepartmentsData.Content.ReadAsStringAsync().Result;
-                departments = JsonConvert.DeserializeObject<List<Department>>(results);
+                string results = getAllRolesData.Content.ReadAsStringAsync().Result;
+                projects = JsonConvert.DeserializeObject<List<Role>>(results);
             }
             else
             {
                 Console.WriteLine("Error calling webApi");
             }
 
-            ViewData.Model = departments;
+            ViewData.Model = projects;
             return View();
         }
 
@@ -49,13 +49,13 @@ namespace ConsumeUsingMVC.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> Create(Department department)
+        public async Task<ActionResult> Create(Role role)
         {
-            HttpResponseMessage isCreated = await _httpClient.PostAsJsonAsync<Department>("create", department);
+            HttpResponseMessage isCreated = await _httpClient.PostAsJsonAsync<Role>("create", role);
 
             if (isCreated.IsSuccessStatusCode)
             {
-                return RedirectToAction("Index", "Department");
+                return RedirectToAction("Index", "Role");
             }
             else
             {
@@ -67,12 +67,12 @@ namespace ConsumeUsingMVC.Controllers
 
         public async Task<ActionResult> Edit(int id)
         {
-            HttpResponseMessage getDepartment = await _httpClient.GetAsync($"getById/{id}");
+            HttpResponseMessage getRole = await _httpClient.GetAsync($"getById/{id}");
 
-            if (getDepartment.IsSuccessStatusCode)
+            if (getRole.IsSuccessStatusCode)
             {
-                string results = getDepartment.Content.ReadAsStringAsync().Result;
-                Department temp = JsonConvert.DeserializeObject<Department>(results);
+                string results = getRole.Content.ReadAsStringAsync().Result;
+                Role temp = JsonConvert.DeserializeObject<Role>(results);
                 ViewData.Model = temp;
             }
             else
@@ -84,13 +84,13 @@ namespace ConsumeUsingMVC.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> Edit(Department department)
+        public async Task<ActionResult> Edit(Role role)
         {
-            HttpResponseMessage isCreated = await _httpClient.PutAsJsonAsync("update", department);
+            HttpResponseMessage isCreated = await _httpClient.PutAsJsonAsync("update", role);
 
             if (isCreated.IsSuccessStatusCode)
             {
-                return RedirectToAction("Index", "Department");
+                return RedirectToAction("Index", "Role");
             }
             else
             {
@@ -102,12 +102,12 @@ namespace ConsumeUsingMVC.Controllers
 
         public async Task<ActionResult> Details(int id)
         {
-            HttpResponseMessage getDepartment = await _httpClient.GetAsync($"getById/{id}");
+            HttpResponseMessage getRole = await _httpClient.GetAsync($"getById/{id}");
 
-            if (getDepartment.IsSuccessStatusCode)
+            if (getRole.IsSuccessStatusCode)
             {
-                string results = getDepartment.Content.ReadAsStringAsync().Result;
-                Department temp = JsonConvert.DeserializeObject<Department>(results);
+                string results = getRole.Content.ReadAsStringAsync().Result;
+                Role temp = JsonConvert.DeserializeObject<Role>(results);
                 ViewData.Model = temp;
             }
             else
@@ -122,14 +122,14 @@ namespace ConsumeUsingMVC.Controllers
 
 
         [ActionName("Delete")]
-        public async Task<ActionResult> DeleteDep(int id)
+        public async Task<ActionResult> DeleteRole(int id)
         {
-            HttpResponseMessage getDepartment = await _httpClient.GetAsync($"getById/{id}");
+            HttpResponseMessage getRole = await _httpClient.GetAsync($"getById/{id}");
 
-            if (getDepartment.IsSuccessStatusCode)
+            if (getRole.IsSuccessStatusCode)
             {
-                string results = getDepartment.Content.ReadAsStringAsync().Result;
-                Department temp = JsonConvert.DeserializeObject<Department>(results);
+                string results = getRole.Content.ReadAsStringAsync().Result;
+                Role temp = JsonConvert.DeserializeObject<Role>(results);
                 ViewData.Model = temp;
             }
             else
@@ -149,7 +149,7 @@ namespace ConsumeUsingMVC.Controllers
 
             if (isDeleted.IsSuccessStatusCode)
             {
-                return RedirectToAction("Index", "Department");
+                return RedirectToAction("Index", "Role");
             }
             else
             {

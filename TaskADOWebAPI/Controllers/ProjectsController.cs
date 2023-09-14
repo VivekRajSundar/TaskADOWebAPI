@@ -34,7 +34,7 @@ namespace TaskADOWebAPI.Controllers
         {
             int newId = _db.CreateProject(project);
 
-            return CreatedAtRoute($"api/employees/getById/{project.Id}", new { id = newId }, project);
+            return Created($"api/employees/getById/{newId}", project);
         }
 
         [HttpPut]
