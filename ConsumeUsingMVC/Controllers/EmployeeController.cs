@@ -53,32 +53,14 @@ namespace ConsumeUsingMVC.Controllers
         [HttpPost]
         public async Task<ActionResult> Create(Employee employee)
         {
-            Employee emp = new Employee()
-            {
-               FirstName = employee.FirstName,
-               LastName = employee.LastName,
-               EmailId = employee.EmailId,
-               Gender = employee.Gender,
-               Salary = employee.Salary,
-               PhoneNumber  = employee.PhoneNumber,
-               DateOfBirth = employee.DateOfBirth,
-               DateOfJoining = employee.DateOfJoining, 
-               DateOfResigning = employee.DateOfResigning,  
-               UpdatedDate  = employee.UpdatedDate,
-               IsActive = employee.IsActive,
-               ManagerId    = employee.ManagerId,
-               DeptId = employee.DeptId,
-               ProjectId    = employee.ProjectId,
-               RoleId = employee.RoleId,
-
-            };
+           
             using (var client = new HttpClient())
             {
                 client.BaseAddress = new Uri(baseUrl + "api/employees/");
                 client.DefaultRequestHeaders.Accept.Clear();
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
-                HttpResponseMessage isCreated = await client.PostAsJsonAsync<Employee>("create", emp);
+                HttpResponseMessage isCreated = await client.PostAsJsonAsync<Employee>("create", employee);
 
                 if (isCreated.IsSuccessStatusCode)
                 {
@@ -94,7 +76,7 @@ namespace ConsumeUsingMVC.Controllers
 
         public async Task<ActionResult> Details(int id)
         {
-            Employee emp = new Employee();
+            
             using (var client = new HttpClient())
             {
                 client.BaseAddress = new Uri(baseUrl + "api/employees/");
@@ -108,7 +90,7 @@ namespace ConsumeUsingMVC.Controllers
                     string results = getEmployee.Content.ReadAsStringAsync().Result;
                     Employee temp = JsonConvert.DeserializeObject<Employee>(results);
                     ViewData.Model = temp;
-                    emp.FirstName = temp.FirstName;
+                    
                 
                 }
                 else
@@ -120,8 +102,57 @@ namespace ConsumeUsingMVC.Controllers
             return View();
         }
 
-        [Route("Delete")]
-        [ActionName("Delete")]
+        public async Task<ActionResult> Edit(int id)
+        {
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri(baseUrl + "api/employees/");
+                client.DefaultRequestHeaders.Accept.Clear();
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+                HttpResponseMessage getEmployee = await client.GetAsync($"getById/{id}");
+
+                if (getEmployee.IsSuccessStatusCode)
+                {
+                    string results = getEmployee.Content.ReadAsStringAsync().Result;
+                    Employee temp = JsonConvert.DeserializeObject<Employee>(results);
+                    ViewData.Model = temp;
+                }
+                else
+                {
+                    Console.WriteLine("Error calling webApi");
+                }
+            }
+            //  ViewData.Model = emp;
+            return View();
+        }
+
+        [HttpPost]
+        [Route("Edit"), ActionName("Edit")]
+        public async Task<ActionResult> Edit(Employee employee)
+        {
+            
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri(baseUrl + "api/employees/");
+                client.DefaultRequestHeaders.Accept.Clear();
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+                HttpResponseMessage isCreated = await client.PutAsJsonAsync("update", employee);
+
+                if (isCreated.IsSuccessStatusCode)
+                {
+                    return RedirectToAction("Index");
+                }
+                else
+                {
+                    Console.WriteLine("Error calling webApi");
+                }
+            }
+            return View();
+        }
+
+        [Route("Delete"), ActionName("Delete")]
         public async Task<ActionResult> DeleteEmp(int id)
         {
             using (var client = new HttpClient())
@@ -137,8 +168,6 @@ namespace ConsumeUsingMVC.Controllers
                     string results = getEmployee.Content.ReadAsStringAsync().Result;
                     Employee temp = JsonConvert.DeserializeObject<Employee>(results);
                     ViewData.Model = temp;
-                    
-
                 }
                 else
                 {

@@ -64,11 +64,14 @@ namespace TaskADOWebAPI.DAL
 
 
             cmd.Parameters.AddWithValue("@DepartmentName", department.DepartmentName);
-            
+            var returnParameter = cmd.Parameters.Add("@ReturnVal", SqlDbType.Int);
+            returnParameter.Direction = ParameterDirection.ReturnValue;
+
             cmd.ExecuteNonQuery();
+            var id = returnParameter.Value;
             _con.Close();
 
-            return department.Id;
+            return (int)id;
         }
 
         
